@@ -17,6 +17,14 @@ spec:
       labels:
         app.kubernetes.io/name: vllm
     spec:
+      nodeSelector:
+        workload: ai-inference
+        accelerator: nvidia
+      tolerations:
+        - key: sku
+          operator: Equal
+          value: gpu
+          effect: NoSchedule
       terminationGracePeriodSeconds: 120
       containers:
         - name: vllm
