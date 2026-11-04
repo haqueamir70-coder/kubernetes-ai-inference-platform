@@ -41,7 +41,16 @@ jobs:
           with open("/tmp/rendered.yaml", encoding="utf-8") as stream:
               docs = [doc for doc in yaml.safe_load_all(stream) if doc]
           assert docs, "No Kubernetes objects rendered"
-          print(f"Validated {len(docs)} Kubernetes objects")
+          print(f"Validated {len(docs)} rendered Kubernetes objects")
+          from pathlib import Path
+          manifest_files = [
+              p for p in Path(".").rglob("*.yaml")
+              if ".git" not in p.parts and ".github" not in p.parts
+          ]
+          for path in manifest_files:
+              with path.open(encoding="utf-8") as stream:
+                  list(yaml.safe_load_all(stream))
+          print(f"Parsed {len(manifest_files)} repository YAML manifests")
           PY
 
   terraform-format:
