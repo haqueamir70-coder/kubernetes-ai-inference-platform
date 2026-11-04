@@ -52,3 +52,27 @@ variable "aks_vm_size" {
   type        = string
   default     = "Standard_D2s_v5"
 }
+
+variable "enable_gpu_node_pool" {
+  description = "Whether to create an optional GPU node pool. Requires enable_aks=true and suitable Azure GPU quota."
+  type        = bool
+  default     = false
+}
+
+variable "gpu_node_vm_size" {
+  description = "Azure GPU VM size; availability and quota vary by region."
+  type        = string
+  default     = "Standard_NC4as_T4_v3"
+}
+
+variable "gpu_node_min_count" {
+  description = "Minimum GPU node count when autoscaling is enabled."
+  type        = number
+  default     = 0
+}
+
+variable "gpu_node_max_count" {
+  description = "Maximum GPU node count when autoscaling is enabled."
+  type        = number
+  default     = 3
+}
