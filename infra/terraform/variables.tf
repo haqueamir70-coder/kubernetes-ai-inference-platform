@@ -28,3 +28,27 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "enable_aks" {
+  description = "Whether to create an AKS cluster. Disabled by default to prevent unexpected Azure spend."
+  type        = bool
+  default     = false
+}
+
+variable "aks_dns_prefix" {
+  description = "DNS prefix for the optional AKS cluster."
+  type        = string
+  default     = "ai-inference-dev"
+}
+
+variable "aks_node_count" {
+  description = "Initial node count for the optional AKS cluster."
+  type        = number
+  default     = 2
+}
+
+variable "aks_vm_size" {
+  description = "VM size for the optional AKS system node pool."
+  type        = string
+  default     = "Standard_D2s_v5"
+}
