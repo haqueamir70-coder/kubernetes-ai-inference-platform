@@ -1,7 +1,6 @@
 resource "azurerm_resource_group" "platform" {
   name     = var.resource_group_name
   location = var.location
-
   tags = {
     project     = "kubernetes-ai-inference-platform"
     environment = var.environment
@@ -14,7 +13,6 @@ resource "azurerm_virtual_network" "platform" {
   location            = azurerm_resource_group.platform.location
   resource_group_name = azurerm_resource_group.platform.name
   address_space       = var.address_space
-
   tags = {
     project     = "kubernetes-ai-inference-platform"
     environment = var.environment
