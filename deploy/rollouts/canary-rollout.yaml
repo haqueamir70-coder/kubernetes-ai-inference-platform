@@ -1,0 +1,36 @@
+# Requires Argo Rollouts controller and a compatible traffic router.
+# Add metric-based AnalysisTemplates before production traffic promotion.
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: inference-api
+  namespace: ai-inference
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: inference-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: inference-api
+    spec:
+      containers:
+        - name: api
+          image: ai-inference-api:0.2.0
+          ports:
+            - name: http
+              containerPort: 8000
+  strategy:
+    canary:
+      steps:
+        - setWeight: 10
+        - pause:
+            duration: 2m
+        - setWeight: 30
+        - pause:
+            duration: 5m
+        - setWeight: 60
+        - pause:
+            duration: 5m
+        - setWeight: 100
