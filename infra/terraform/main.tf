@@ -70,7 +70,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "gpu" {
   max_count             = var.gpu_node_max_count
   vnet_subnet_id        = azurerm_subnet.aks.id
   node_labels = {
-    workload = "ai-inference"
+    workload    = "ai-inference"
     accelerator = "nvidia"
   }
   node_taints = [
