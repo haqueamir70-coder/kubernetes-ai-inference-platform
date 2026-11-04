@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and design discussions
+    url: https://github.com/haqueamir70-coder/kubernetes-ai-inference-platform/discussions
+    about: Use GitHub Discussions for questions, design proposals, and general platform conversations.
