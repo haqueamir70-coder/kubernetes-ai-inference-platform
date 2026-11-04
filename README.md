@@ -126,6 +126,16 @@ Alert on sustained user impact and error-budget burn, not CPU utilization alone.
 
 See [threat model](security/threat-model.md).
 
+## Advanced platform profiles
+
+- **Real inference:** [vLLM GPU runtime profile](deploy/vllm/README.md) and [ADR-002](docs/decisions/ADR-002-inference-runtime.md). Demo mode remains the default.
+- **GitOps:** [Argo CD Application](deploy/gitops/application.yaml).
+- **Autoscaling:** [HPA baseline](deploy/app/base/hpa.yaml); [KEDA Prometheus alternative](deploy/autoscaling/keda-prometheus-scaledobject.yaml). Do not apply both to the same Deployment.
+- **Progressive delivery:** [Argo Rollouts canary example](deploy/rollouts/canary-rollout.yaml); requires controller, traffic router, and metric-based analysis before production.
+- **Observability:** [Prometheus ServiceMonitor](deploy/observability/servicemonitor.yaml) and [OpenTelemetry Collector example](deploy/observability/otel-collector.yaml); both require their respective operators.
+- **Security:** [Trivy filesystem workflow](.github/workflows/security.yml).
+- **Azure:** Terraform can optionally create AKS with `enable_aks=true`. It defaults to `false` to prevent unexpected spend. Review region, quota, network, identity, node sizing, and cost before enabling.
+
 ## Operations
 
 [API unavailable](docs/runbooks/api-unavailable.md) · [High latency](docs/runbooks/high-latency.md) · [Rollback](docs/runbooks/rollback.md)
