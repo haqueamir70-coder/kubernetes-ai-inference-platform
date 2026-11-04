@@ -39,7 +39,7 @@ AI inference platforms must handle more than model containers: workload isolatio
 | Autoscaling | HPA-compatible metrics | KEDA with real queue/external metrics |
 | Releases | Kubernetes rolling update | Argo Rollouts with metric-based canary |
 | Security | Pod hardening, NetworkPolicy, scans | SBOM, signing, admission verification |
-| Telemetry | Health endpoints | OpenTelemetry, Prometheus, Grafana |
+| Telemetry | Prometheus request/latency metrics and health endpoints | OpenTelemetry, Prometheus, Grafana |
 | Model serving | Adapter interface | vLLM, Triton, or runtime selected by workload |
 
 ## Repository structure
