@@ -58,3 +58,27 @@ resource "azurerm_kubernetes_cluster" "platform" {
     managed_by  = "terraform"
   }
 }
+
+resource "azurerm_kubernetes_cluster_node_pool" "gpu" {
+  count                 = var.enable_aks && var.enable_gpu_node_pool ? 1 : 0
+  name                  = "gpu"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.platform[0].id
+  vm_size               = var.gpu_node_vm_size
+  mode                  = "User"
+  enable_auto_scaling   = true
+  min_count             = var.gpu_node_min_count
+  max_count             = var.gpu_node_max_count
+  vnet_subnet_id        = azurerm_subnet.aks.id
+  node_labels = {
+    workload = "ai-inference"
+    accelerator = "nvidia"
+  }
+  node_taints = [
+    "sku=gpu:NoSchedule"
+  ]
+  tags = {
+    project     = "kubernetes-ai-inference-platform"
+    environment = var.environment
+    managed_by  = "terraform"
+  }
+}
