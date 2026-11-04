@@ -78,3 +78,7 @@ Pin model and container digests, generate SBOM/provenance, retrieve secrets via 
 ### 10. Answer
 
 Test scheduling, GPU drivers/device plugin, memory fit, model load, throughput/latency under load, autoscaling, failure recovery, security and cost on a real cluster before production claims.
+
+## Complete zero-to-hero guide
+
+See [ZERO-TO-HERO.md](./ZERO-TO-HERO.md) for the business scenario, architecture walkthrough, tool-by-tool explanations, implementation sequence, practical commands, troubleshooting playbook and additional scenario-based interview questions with answers.
