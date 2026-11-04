@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: azure/setup-kubectl@v4
-      - name: Validate Kustomize build
+      - name: Render Kustomize overlay
         run: kubectl kustomize deploy/app/overlays/local > /tmp/rendered.yaml
       - name: Parse rendered YAML
         run: |
