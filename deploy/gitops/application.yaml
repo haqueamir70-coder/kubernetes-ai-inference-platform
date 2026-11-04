@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ai-inference-platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/haqueamir70-coder/kubernetes-ai-inference-platform.git
+    targetRevision: main
+    path: deploy/app/overlays/local
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ai-inference
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
