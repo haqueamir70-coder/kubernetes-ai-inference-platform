@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible defect in the platform
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report only reproducible issues. Never include credentials, kubeconfigs, private model artifacts, or customer prompts.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What failed, and what did you expect to happen?
+      placeholder: A concise description of the problem
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Include the smallest safe sequence of commands or configuration needed to reproduce.
+      placeholder: |
+        1. Apply ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include versions and environment details; redact identifiers and sensitive values.
+      placeholder: Kubernetes version, OS, container runtime, Terraform version, local or cloud
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized logs and evidence
+      description: Remove tokens, secrets, private endpoints, customer data, and raw prompts.
+      render: text
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact and workaround
+      description: Describe user impact, severity, and any safe workaround.
