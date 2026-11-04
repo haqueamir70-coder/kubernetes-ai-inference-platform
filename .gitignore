@@ -1,0 +1,34 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local secrets/config
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kubeconfig*
+secrets/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
