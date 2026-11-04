@@ -1,0 +1,6 @@
+location            = "eastus"
+resource_group_name = "rg-ai-inference-platform-dev"
+vnet_name            = "vnet-ai-inference-dev"
+address_space        = ["10.40.0.0/16"]
+aks_subnet_prefixes  = ["10.40.1.0/24"]
+environment          = "dev"
