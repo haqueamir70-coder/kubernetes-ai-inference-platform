@@ -1,44 +1,34 @@
 # Implementation Plan
 
-## Delivery principles
-1. Deliver small increments with reproducible evidence.
-2. Add controllers and cloud services only for defined requirements.
-3. Keep cloud spend opt-in; review Terraform plans before apply.
-4. Mark capabilities complete only when code, tests, and validation evidence exist.
-5. Never commit state files, credentials, kubeconfigs, model weights, or customer prompts.
+## Phase 0 — Architecture
+Context and trust boundaries, workload profile, SLOs, threat model and ADRs. Exit: assumptions reviewed.
 
-## Phase 0 — Architecture and requirements
-**Deliverables:** context, container, deployment and trust-boundary diagrams; workload profile (model format, schema, concurrency, payload size, throughput, latency, accelerator profile); SLO definitions; threat model; ADRs.
-**Exit gate:** architecture review; assumptions and non-goals explicit.
+## Phase 1 — API and container
+FastAPI contract, validation, health endpoints, tests, non-root image. Exit: CI tests and local smoke test pass.
 
-## Phase 1 — API and container baseline
-**Deliverables:** request validation, health endpoints, tests, non-root image, CI test job.
-**Exit gate:** tests pass and local smoke test is reproducible. Current adapter is deterministic demo scaffolding, not an ML model.
+## Phase 2 — Kubernetes baseline
+Restricted namespace, probes, requests/limits, NetworkPolicy, Service and HPA. Exit: rendered manifests validate and local cluster rollout is verified.
 
-## Phase 2 — Kubernetes workload baseline
-**Deliverables:** namespace, service account, deployment, Service, NetworkPolicy, probes, resource requests/limits, restricted security context, local Kustomize overlay.
-**Exit gate:** rendered manifests validate and local cluster rollout succeeds. NetworkPolicy must be tested with the selected CNI and actual gateway namespace labels.
+## Phase 3 — Infrastructure
+Terraform resource group, VNet and AKS subnet foundation. AKS/GPU compute remains an explicit opt-in cost decision. Exit: fmt/init/validate/plan reviewed and remote state secured.
 
-## Phase 3 — Terraform foundation
-**Deliverables:** resource group, VNet, AKS subnet example, environment tfvars, outputs, remote backend design.
-**Exit gate:** fmt/init/validate/reviewed plan. This example does not create AKS or incur compute cost. Add cluster resources only after identity, networking, policy, and cost reviews.
+## Phase 4 — Real inference
+Optional vLLM adapter and GPU deployment profile. Exit: compatible GPU node, model licensing reviewed, API-to-runtime smoke test and load profile pass.
 
-## Phase 4 — GitOps
-**Deliverables:** Argo CD installation, least-privilege project, environment Applications, immutable image promotion and drift detection.
-**Exit gate:** reviewed Git change reconciles into non-production; rollback by Git revert demonstrated.
+## Phase 5 — GitOps
+Argo CD application and environment promotion. Exit: Git commit reconciles in non-production and rollback by Git revert is demonstrated.
 
-## Phase 5 — Scaling and performance
-**Deliverables:** load profile, HPA baseline, KEDA only with real queue/external metrics, CPU/memory/GPU capacity model.
-**Exit gate:** scale-out/in measured; no oscillation or overload cascade.
+## Phase 6 — Autoscaling
+HPA for resource metrics; KEDA as an alternative when Prometheus exposes a real, validated workload metric. Exit: load test proves scale behavior without oscillation or overload.
 
-## Phase 6 — Progressive delivery
-**Deliverables:** canary strategy, traffic split, analysis templates, metric-based abort, model compatibility/warm-up plan.
-**Exit gate:** injected bad release aborts without violating agreed SLOs.
+## Phase 7 — Progressive delivery
+Argo Rollouts canary profile. Exit: traffic routing and metric-based AnalysisTemplate are installed and a bad release is automatically aborted.
 
-## Phase 7 — DevSecOps and observability
-**Deliverables:** dependency/secret/IaC/image scans, SBOM, signing/provenance policy, OTel instrumentation, dashboards/alerts, payload redaction.
-**Exit gate:** findings triaged; alerts actionable; telemetry overhead measured.
+## Phase 8 — Security and observability
+Trivy scan, SBOM/signing extension, Prometheus Operator and OpenTelemetry. Exit: real metrics endpoint, dashboards, alert rules and security findings are validated.
 
-## Phase 8 — Operational readiness
-**Deliverables:** ownership/on-call, SLO review, rollback/restore runbooks, game days, post-incident review, cost-per-1k-requests and GPU utilization view.
-**Exit gate:** game day completed and actions assigned.
+## Phase 9 — Operational readiness
+SLOs, runbooks, ownership, game days, recovery and cost-per-1k-request reporting. Exit: incident exercise completed with actions assigned.
+
+## Environment-specific gates
+This repository is a reference implementation. It does not claim an AKS cluster, GPU node pool, Argo CD controller, KEDA operator, Prometheus Operator or OTel operator has been installed. Those require a target subscription/cluster, cost approval, credentials, and validation evidence.
