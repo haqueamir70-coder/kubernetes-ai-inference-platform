@@ -149,3 +149,8 @@ See [8–12 years interview scenarios](docs/scenarios/senior-engineering-scenari
 Read [CONTRIBUTING.md](CONTRIBUTING.md). Run `scripts/validate.sh` locally. CI runs API tests, Kubernetes manifest rendering/YAML parsing, and Terraform formatting checks.
 
 Features are marked implemented only when working code, tests, and reproducible validation evidence are committed.
+
+
+## Architecture and interview preparation
+
+See the [architecture diagram and interview questions](docs/README.md) for the repository-specific design walkthrough and technical interview guide.
