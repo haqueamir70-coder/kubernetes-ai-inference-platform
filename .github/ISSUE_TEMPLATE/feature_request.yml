@@ -1,0 +1,42 @@
+name: Feature request
+description: Propose a platform capability or improvement
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Proposals should identify the user problem and operational trade-offs. Cloud provisioning and paid services must remain opt-in.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: Which user or operator problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the capability and expected user experience.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Include simpler alternatives and why they are insufficient.
+  - type: textarea
+    id: operations
+    attributes:
+      label: Security, reliability, and cost impact
+      description: Consider identity, network boundaries, failure modes, observability, resource consumption, and recurring cost.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Acceptance criteria and validation
+      description: List testable outcomes and evidence required before marking the feature implemented.
+    validations:
+      required: true
