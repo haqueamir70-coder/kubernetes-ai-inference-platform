@@ -5,7 +5,6 @@ metadata:
   namespace: ai-inference
   labels:
     app.kubernetes.io/name: inference-api
-    app.kubernetes.io/part-of: ai-inference-platform
 spec:
   replicas: 2
   revisionHistoryLimit: 5
@@ -21,7 +20,6 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: inference-api
-        app.kubernetes.io/part-of: ai-inference-platform
     spec:
       serviceAccountName: inference-api
       automountServiceAccountToken: false
@@ -39,10 +37,15 @@ spec:
           ports:
             - name: http
               containerPort: 8000
-              protocol: TCP
           env:
             - name: APP_VERSION
-              value: "0.1.0"
+              value: "0.2.0"
+            - name: INFERENCE_BACKEND
+              value: "demo"
+            - name: VLLM_BASE_URL
+              value: "http://vllm:8000/v1"
+            - name: DEFAULT_MODEL
+              value: "Qwen/Qwen2.5-1.5B-Instruct"
           readinessProbe:
             httpGet:
               path: /readyz
