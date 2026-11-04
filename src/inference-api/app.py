@@ -7,12 +7,8 @@ from pydantic import BaseModel, Field
 
 APP_VERSION = os.getenv("APP_VERSION", "0.1.0")
 START_TIME = time.time()
-
-app = FastAPI(
-    title="AI Inference API Scaffold",
-    version=APP_VERSION,
-    description="Deterministic API scaffold. Replace the adapter with a selected model runtime.",
-)
+app = FastAPI(title="AI Inference API Scaffold", version=APP_VERSION,
+              description="Deterministic scaffold; replace adapter with a selected model runtime.")
 
 
 class InferenceRequest(BaseModel):
@@ -27,8 +23,7 @@ class InferenceResponse(BaseModel):
 
 
 class DemoInferenceAdapter:
-    """Deterministic placeholder; deliberately does not claim to run an ML model."""
-
+    """Placeholder adapter: returns deterministic text; it does not run an ML model."""
     def infer(self, model: str, text: str) -> str:
         return f"[demo:{model}] Received {len(text)} characters."
 
@@ -43,7 +38,6 @@ def healthz() -> dict[str, str]:
 
 @app.get("/readyz")
 def readyz() -> dict[str, str]:
-    # Replace with dependency/model readiness checks when a real runtime is integrated.
     return {"status": "ready"}
 
 
@@ -63,8 +57,6 @@ def infer(request: InferenceRequest) -> InferenceResponse:
 
 @app.get("/metrics-note")
 def metrics_note() -> dict[str, str | float]:
-    return {
-        "status": "metrics integration pending",
-        "uptime_seconds": round(time.time() - START_TIME, 2),
-        "note": "Integrate a Prometheus/OpenTelemetry exporter before production use.",
-    }
+    return {"status": "metrics integration pending",
+            "uptime_seconds": round(time.time() - START_TIME, 2),
+            "note": "Add a Prometheus/OpenTelemetry exporter before production use."}
