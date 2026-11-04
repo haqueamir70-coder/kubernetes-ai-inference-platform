@@ -30,3 +30,9 @@ def test_input_validation():
 
 def test_request_limits():
     assert client.post("/v1/infer", json={"model": "demo", "input": "x", "max_tokens": 99999}).status_code == 422
+
+
+def test_prometheus_metrics_endpoint():
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    assert "http_requests_total" in response.text
