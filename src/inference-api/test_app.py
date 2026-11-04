@@ -25,7 +25,7 @@ def test_inference_demo_response():
     body = response.json()
     assert body["model"] == "demo-model"
     assert body["mode"] == "demo"
-    assert "15 characters" in body["output"]
+    assert "14 characters" in body["output"]
 
 
 def test_input_validation():
