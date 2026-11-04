@@ -1,0 +1,16 @@
+# Requires Prometheus Operator and an API /metrics endpoint.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: inference-api
+  namespace: ai-inference
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: inference-api
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
