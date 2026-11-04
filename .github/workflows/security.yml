@@ -15,11 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install pinned Trivy CLI
-        run: |
-          curl -fL --retry 3 -o /tmp/trivy.tar.gz https://github.com/aquasecurity/trivy/releases/download/v0.58.1/trivy_0.58.1_Linux-64bit.tar.gz
-          tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
-          sudo install /tmp/trivy /usr/local/bin/trivy
-          trivy --version
       - name: Scan repository filesystem
-        run: trivy fs --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
