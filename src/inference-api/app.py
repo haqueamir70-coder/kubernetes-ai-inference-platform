@@ -3,8 +3,9 @@ from __future__ import annotations
 import os
 import time
 import httpx
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
 from pydantic import BaseModel, Field
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 
 APP_VERSION = os.getenv("APP_VERSION", "0.2.0")
 INFERENCE_BACKEND = os.getenv("INFERENCE_BACKEND", "demo").lower()
@@ -12,8 +13,27 @@ VLLM_BASE_URL = os.getenv("VLLM_BASE_URL", "http://vllm:8000/v1")
 VLLM_API_KEY = os.getenv("VLLM_API_KEY", "not-needed")
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "Qwen/Qwen2.5-1.5B-Instruct")
 START_TIME = time.time()
+HTTP_REQUESTS = Counter(
+    "http_requests_total", "HTTP requests handled by the inference API",
+    ["app", "route", "method", "status"],
+)
+HTTP_REQUEST_DURATION = Histogram(
+    "http_request_duration_seconds", "HTTP request duration in seconds",
+    ["app", "route", "method"],
+)
 
 app = FastAPI(title="AI Inference Platform API", version=APP_VERSION)
+
+
+@app.middleware("http")
+async def collect_http_metrics(request: Request, call_next):
+    started = time.perf_counter()
+    response = await call_next(request)
+    route = request.url.path
+    if route != "/metrics":
+        HTTP_REQUESTS.labels("inference-api", route, request.method, str(response.status_code)).inc()
+        HTTP_REQUEST_DURATION.labels("inference-api", route, request.method).observe(time.perf_counter() - started)
+    return response
 
 
 class InferenceRequest(BaseModel):
@@ -56,6 +76,11 @@ def run_inference(request: InferenceRequest) -> InferenceResponse:
         return InferenceResponse(model=request.model, output=output, mode="vllm")
     except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError) as exc:
         raise HTTPException(status_code=502, detail="Inference runtime request failed") from exc
+
+
+@app.get("/metrics")
+def metrics() -> Response:
+    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 @app.get("/healthz")
