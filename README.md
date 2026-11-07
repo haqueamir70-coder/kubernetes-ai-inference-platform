@@ -1,168 +1,167 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:071A2F,50:326CE5,100:8B5CF6&height=190&section=header&text=Kubernetes+AI+Inference+Platform&fontSize=32&fontColor=ffffff&animation=fadeIn" alt="Kubernetes AI Inference Platform project banner" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:071A2F,45:2563EB,100:8B5CF6&height=230&section=header&text=Kubernetes%20AI%20Inference&fontSize=36&fontColor=ffffff&animation=fadeIn" width="100%" alt="Kubernetes AI Inference Platform"/>
 
-<img src="https://readme-typing-svg.demolab.com/?font=Inter&weight=600&size=16&pause=1600&color=38BDF8&center=true&vCenter=true&width=900&height=36&lines=Kubernetes+AI+Inference+Platform+%E2%80%A2+Architecture+%E2%80%A2+Automation+%E2%80%A2+Security" alt="Animated project focus line" />
+### Serve · Scale · Secure · Observe AI workloads
 
-![Kubernetes](https://img.shields.io/badge/Inference+Platform-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) ![AI](https://img.shields.io/badge/Model+Serving-7C3AED?style=for-the-badge) ![Terraform](https://img.shields.io/badge/Infrastructure+as+Code-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=for-the-badge&logo=terraform&logoColor=white)](https://developer.hashicorp.com/terraform)
+[![GitOps](https://img.shields.io/badge/GitOps-Argo_CD-EF7B4D?style=for-the-badge)](https://argo-cd.readthedocs.io/)
+[![OpenTelemetry](https://img.shields.io/badge/Observability-OpenTelemetry-5B5BD6?style=for-the-badge&logo=opentelemetry&logoColor=white)](https://opentelemetry.io/)
+
+**A production-minded reference platform for deploying, scaling, securing and observing AI inference workloads on Kubernetes — starting with a deterministic API baseline and extending toward real model serving.**
+
+[Architecture](#-reference-architecture) · [Run locally](#-run-locally) · [Platform profiles](#-advanced-platform-profiles) · [Operations](#-operations)
 
 </div>
 
----
-
-# Kubernetes AI Inference Platform
-
-<p align="center"><strong>A production-minded reference platform for deploying, scaling, securing, and observing AI inference workloads on Kubernetes.</strong></p>
-
-<p align="center">
-  <img alt="Kubernetes" src="https://img.shields.io/badge/Kubernetes-platform-326CE5?logo=kubernetes&logoColor=white">
-  <img alt="Terraform" src="https://img.shields.io/badge/IaC-Terraform-7B42BC?logo=terraform&logoColor=white">
-  <img alt="GitOps" src="https://img.shields.io/badge/Delivery-GitOps-ef7b4d">
-  <img alt="Security" src="https://img.shields.io/badge/Security-DevSecOps-0A7B62">
-  <img alt="Observability" src="https://img.shields.io/badge/Observability-OpenTelemetry-5B5BD6?logo=opentelemetry&logoColor=white">
-  <img alt="Status" src="https://img.shields.io/badge/Status-Reference%20Implementation-orange">
-</p>
-
-> **Status:** This repository provides a runnable deterministic API scaffold, Kubernetes baseline, CI validation, Terraform network foundation example, architecture docs, and operational guidance. Argo CD, KEDA, GPU serving, canary automation, cloud cluster provisioning, and full production telemetry are extension phases—not claimed as live production deployments.
+> [!NOTE]
+> **Current baseline:** runnable deterministic API scaffold, Kubernetes baseline, CI validation, Terraform network foundation example, architecture docs and operational guidance. The included API adapter returns a deterministic demo response; it does not load an ML model. GPU serving, cloud cluster provisioning, Argo CD, KEDA and canary automation are extension profiles, not claimed live production deployments.
 
 ## Executive overview
 
-AI inference platforms must handle more than model containers: workload isolation, request concurrency, accelerator scheduling, model lifecycle, scaling signals, safe releases, supply-chain security, telemetry, cost, and incident response. This project develops those capabilities incrementally, starting with a locally testable baseline and adding cloud integrations only when requirements justify them.
+AI inference platforms must solve more than model packaging. They need request concurrency management, accelerator scheduling, model lifecycle, scaling signals, safe rollout, supply-chain trust, telemetry, cost control and incident response.
+
+This project develops those capabilities incrementally, beginning with a locally testable API and Kubernetes baseline. Advanced components are added as explicit profiles with prerequisites and validation gates.
 
 ## Reference architecture
 
-![Kubernetes AI inference reference architecture](docs/architecture/platform-reference-architecture.svg)
+<p align="center">
+  <img src="docs/architecture/platform-reference-architecture.svg" alt="Kubernetes AI inference platform reference architecture" width="100%"/>
+</p>
 
-### Request lifecycle
-1. Client traffic enters through an ingress/API gateway with TLS, authentication, and rate limits.
-2. Kubernetes routes requests to healthy inference API pods through a Service.
-3. The API validates input and calls an inference adapter. The included adapter is deterministic demo scaffolding; it does not load an ML model.
-4. Workload and application telemetry is exported without recording sensitive request payloads.
-5. Scaling and rollout policies are introduced after workload signals and SLOs are defined.
+```mermaid
+flowchart LR
+  Client[Client] --> Gateway[Ingress / API gateway]
+  Gateway --> Service[Kubernetes Service]
+  Service --> API[Inference API pods]
+  API --> Adapter[Inference adapter]
+  Adapter -. real model runtime profile .-> Model[vLLM / Triton]
+  API --> Metrics[Metrics and traces]
+  Metrics --> Observe[Prometheus / OpenTelemetry]
+  Autoscale[HPA / KEDA profiles] -. scaling signals .-> API
+  GitOps[GitOps profile] -. desired state .-> Service
+```
 
-## Technology decisions
+## Request lifecycle
+
+1. Client traffic enters an approved ingress/API gateway with TLS, authentication and rate limits.
+2. Kubernetes routes requests to healthy API pods through a Service.
+3. The API validates input and calls an inference adapter.
+4. The baseline adapter returns deterministic demo output; it does not load a model.
+5. Application and workload telemetry is exported without recording sensitive request payloads.
+6. Scaling and rollout policies are enabled only after workload signals and SLOs are defined.
+
+## Technology and decision map
 
 | Capability | Baseline | Extension / decision gate |
 |---|---|---|
-| Infrastructure | Terraform | Azure AKS, network, identity, remote state |
-| Runtime | Kubernetes | GPU node pools when benchmarks justify them |
-| Packaging | Kustomize | Helm for reusable multi-environment packaging |
+| Infrastructure | Terraform network foundation | Azure AKS and private networking |
+| Runtime | Kubernetes manifests | GPU node pools when benchmarks justify them |
+| Packaging | Kustomize | Helm for multi-environment packaging |
 | Delivery | GitHub Actions CI | Argo CD GitOps reconciliation |
-| Autoscaling | HPA-compatible metrics | KEDA with real queue/external metrics |
+| Autoscaling | HPA-compatible baseline | KEDA with real queue/external metrics |
 | Releases | Kubernetes rolling update | Argo Rollouts with metric-based canary |
-| Security | Pod hardening, NetworkPolicy, scans | SBOM, signing, admission verification |
-| Telemetry | Prometheus request/latency metrics and health endpoints | OpenTelemetry, Prometheus, Grafana |
-| Model serving | Adapter interface | vLLM, Triton, or runtime selected by workload |
-
-## Repository structure
-
-```text
-.
-├── .github/workflows/          # CI quality checks
-├── docs/
-│   ├── architecture/           # SVG architecture diagram
-│   ├── decisions/              # ADRs
-│   ├── runbooks/               # Operations procedures
-│   ├── scenarios/              # Senior engineering interview scenarios
-│   └── implementation-plan.md  # Phased roadmap
-├── deploy/app/                 # Kubernetes base and local overlay
-├── infra/terraform/            # Terraform foundation example
-├── src/inference-api/          # API scaffold and tests
-├── security/                   # Threat model
-└── scripts/                    # Local validation
-```
+| Security | Pod hardening, NetworkPolicy, scans | SBOM, signing and admission verification |
+| Telemetry | Health and Prometheus metrics | OpenTelemetry and Grafana |
+| Model serving | Deterministic adapter | vLLM, Triton or runtime selected by workload |
 
 ## Run locally
 
-Prerequisites: Python 3.12; Docker and kubectl for container/Kubernetes steps; kind or minikube for a local cluster.
+Prerequisites: Python 3.12+. Docker and kubectl for container/Kubernetes steps; kind or minikube for local cluster testing.
+
+### API tests and local server
 
 ```bash
-# Run API and tests
 cd src/inference-api
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pytest -q
 uvicorn app:app --host 127.0.0.1 --port 8000
+```
 
-# Build image from repository root
+### Build and deploy to kind
+
+From the repository root:
+
+```bash
 docker build -t ai-inference-api:dev ./src/inference-api
-
-# With kind: load image and deploy
 kind load docker-image ai-inference-api:dev
 kubectl apply -k deploy/app/overlays/local
 kubectl -n ai-inference rollout status deployment/inference-api
 kubectl -n ai-inference port-forward svc/inference-api 8080:80
+```
+
+Test the endpoints:
+
+```bash
 curl -fsS http://127.0.0.1:8080/healthz
 curl -fsS -X POST http://127.0.0.1:8080/v1/infer \
   -H 'Content-Type: application/json' \
   -d '{"model":"demo-model","input":"platform engineering"}'
 ```
 
-The endpoint returns a deterministic demo response, not a model prediction. The local overlay expects the image to be loaded into the cluster.
-
-## Phased delivery roadmap
-
-| Phase | Deliverable | Exit evidence |
-|---|---|---|
-| 0 — Architecture | Context, trust boundaries, SLOs, ADRs, threat model | Reviewed design and explicit assumptions |
-| 1 — API baseline | Validation, health endpoints, tests, container | CI passes; local smoke test succeeds |
-| 2 — Kubernetes | Namespace, hardened deployment, Service, NetworkPolicy | Workload healthy; policy reviewed |
-| 3 — IaC | Resource group/VNet/subnet foundation | fmt/validate/plan; state protection designed |
-| 4 — GitOps | Argo CD and environment promotion | Git commit reconciles; drift visible |
-| 5 — Scaling | HPA baseline, then KEDA with real metrics | Load-test and capacity evidence |
-| 6 — Progressive delivery | Canary metrics and rollback policy | Failure experiment aborts bad release |
-| 7 — Security/telemetry | SBOM, scans, signing, OTel dashboards | Security gates and actionable signals |
-| 8 — Operations | SLOs, runbooks, game days, recovery | Operational exercise completed |
-
-See [implementation plan](docs/implementation-plan.md).
-
-## Reliability and SLO design
-
-Define objectives from measured workload baselines, not assumptions:
-- **Availability:** successful eligible requests / eligible requests.
-- **Latency:** p50/p95/p99 by model, version, and payload size.
-- **Saturation:** queue depth, in-flight requests, CPU throttling, memory pressure, GPU utilization, pending pods.
-- **Correctness:** valid response/schema rate and model/runtime error rate.
-
-Alert on sustained user impact and error-budget burn, not CPU utilization alone.
-
-## Security baseline
-- Run non-root; drop capabilities; use RuntimeDefault seccomp and read-only root filesystem where compatible.
-- Set resource requests/limits and namespace quotas.
-- Use default-deny network policy and explicitly allow dependencies.
-- Pin production images by immutable digest.
-- Scan source, dependencies, IaC, and container images; retain an SBOM.
-- Use workload identity and short-lived credentials; never commit secrets.
-- Do not log raw prompts, secrets, or customer payloads by default.
-
-See [threat model](security/threat-model.md).
+The response is deterministic demo output, not an ML model prediction. The local overlay expects the image to be loaded into the cluster.
 
 ## Advanced platform profiles
 
-- **Real inference:** [vLLM GPU runtime profile](deploy/vllm/README.md) and [ADR-002](docs/decisions/ADR-002-inference-runtime.md). Demo mode remains the default.
-- **GitOps:** [Argo CD Application](deploy/gitops/application.yaml).
-- **Autoscaling:** [HPA baseline](deploy/app/base/hpa.yaml); [KEDA Prometheus alternative](deploy/autoscaling/keda-prometheus-scaledobject.yaml). Do not apply both to the same Deployment.
-- **Progressive delivery:** [Argo Rollouts canary example](deploy/rollouts/canary-rollout.yaml); requires controller, traffic router, and metric-based analysis before production.
-- **Observability:** [Prometheus ServiceMonitor](deploy/observability/servicemonitor.yaml) and [OpenTelemetry Collector example](deploy/observability/otel-collector.yaml); both require their respective operators.
+These profiles are optional and have their own prerequisites. Do not apply every controller/profile simultaneously.
+
+- **Real model runtime:** [vLLM GPU profile](deploy/vllm/README.md) and [ADR-002](docs/decisions/ADR-002-inference-runtime.md). Requires compatible GPU nodes, drivers, model artifacts and capacity planning.
+- **GitOps:** [Argo CD Application](deploy/gitops/application.yaml). Requires Argo CD installed and repository access configured.
+- **Autoscaling:** [HPA baseline](deploy/app/base/hpa.yaml); [KEDA Prometheus alternative](deploy/autoscaling/keda-prometheus-scaledobject.yaml). Do not apply both to the same Deployment without an explicit scaling ownership design.
+- **Progressive delivery:** [Argo Rollouts canary](deploy/rollouts/canary-rollout.yaml). Requires controller, traffic router and metric analysis before production.
+- **Observability:** [ServiceMonitor](deploy/observability/servicemonitor.yaml) and [OpenTelemetry Collector example](deploy/observability/otel-collector.yaml). Require the corresponding operators/components.
 - **Security:** [Trivy filesystem workflow](.github/workflows/security.yml).
-- **Azure:** Terraform can optionally create AKS with `enable_aks=true`. It defaults to `false` to prevent unexpected spend. Review region, quota, network, identity, node sizing, and cost before enabling.
+- **Azure:** Terraform can optionally create AKS with `enable_aks=true`; the default is `false` to prevent unexpected spend. Review quota, network, identity, node sizing and cost before enabling.
+
+## SLO and capacity model
+
+Define objectives from measured workload baselines:
+
+| Signal | Example measurement |
+|---|---|
+| Availability | Successful eligible requests / eligible requests |
+| Latency | p50, p95 and p99 by model, version and payload size |
+| Saturation | Queue depth, in-flight requests, CPU throttling, memory pressure, GPU utilization and pending pods |
+| Correctness | Valid response/schema rate and model/runtime error rate |
+| Cost efficiency | Cost per 1,000 requests or per successful inference |
+
+Alert on sustained user impact and error-budget burn, not CPU utilization alone. Do not publish an SLO target until the service boundary, measurement window and workload baseline are defined.
+
+## Security baseline
+
+- Run non-root; drop capabilities; use RuntimeDefault seccomp and read-only root filesystem where compatible.
+- Set requests, limits and namespace quotas.
+- Use default-deny network policy with explicit dependency allowances.
+- Pin production images by immutable digest.
+- Scan source, dependencies, IaC and images; retain an SBOM.
+- Use workload identity and short-lived credentials.
+- Avoid logging raw prompts, secrets or customer payloads by default.
+
+See [threat model](security/threat-model.md).
 
 ## Operations
 
-[API unavailable](docs/runbooks/api-unavailable.md) · [High latency](docs/runbooks/high-latency.md) · [Rollback](docs/runbooks/rollback.md)
+- [API unavailable](docs/runbooks/api-unavailable.md)
+- [High latency](docs/runbooks/high-latency.md)
+- [Rollback](docs/runbooks/rollback.md)
+- [Implementation plan](docs/implementation-plan.md)
+- [Architecture decisions](docs/decisions/)
 
 ## Senior engineering scenarios
 
-See [8–12 years interview scenarios](docs/scenarios/senior-engineering-scenarios.md): GPU capacity, queue autoscaling, model rollout, Terraform state recovery, supply-chain compromise, regional outage, retry storms, multi-tenancy, telemetry cost, and burst traffic.
+[Open the senior engineering scenario bank](docs/scenarios/senior-engineering-scenarios.md) for GPU capacity, queue autoscaling, model rollout, Terraform state recovery, supply-chain compromise, regional outage, retry storms, multi-tenancy and telemetry cost.
 
 ## Contribution and validation
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md). Run `scripts/validate.sh` locally. CI runs API tests, Kubernetes manifest rendering/YAML parsing, and Terraform formatting checks.
+Read [CONTRIBUTING.md](CONTRIBUTING.md). Run `scripts/validate.sh` locally. CI checks API tests, Kubernetes manifest rendering/YAML parsing and Terraform formatting.
 
-Features are marked implemented only when working code, tests, and reproducible validation evidence are committed.
+Features are marked implemented only when working code, tests and reproducible validation evidence are committed.
 
+## Maintainer
 
-## Architecture and interview preparation
+**MD Amirul Haque** · [GitHub](https://github.com/haqueamir70-coder) · [LinkedIn](https://www.linkedin.com/in/md-amirul-haque/)
 
-See the [architecture diagram and interview questions](docs/README.md) for the repository-specific design walkthrough and technical interview guide.
+<sub>Build the serving path first. Scale from evidence. Secure every transition.</sub>
