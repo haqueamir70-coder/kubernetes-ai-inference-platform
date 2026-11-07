@@ -1,3 +1,15 @@
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:071A2F,50:326CE5,100:8B5CF6&height=190&section=header&text=Kubernetes+AI+Inference+Platform&fontSize=32&fontColor=ffffff&animation=fadeIn" alt="Kubernetes AI Inference Platform project banner" width="100%" />
+
+<img src="https://readme-typing-svg.demolab.com/?font=Inter&weight=600&size=16&pause=1600&color=38BDF8&center=true&vCenter=true&width=900&height=36&lines=Kubernetes+AI+Inference+Platform+%E2%80%A2+Architecture+%E2%80%A2+Automation+%E2%80%A2+Security" alt="Animated project focus line" />
+
+![Kubernetes](https://img.shields.io/badge/Inference+Platform-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white) ![AI](https://img.shields.io/badge/Model+Serving-7C3AED?style=for-the-badge) ![Terraform](https://img.shields.io/badge/Infrastructure+as+Code-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+
+</div>
+
+---
+
 # Kubernetes AI Inference Platform
 
 <p align="center"><strong>A production-minded reference platform for deploying, scaling, securing, and observing AI inference workloads on Kubernetes.</strong></p>
