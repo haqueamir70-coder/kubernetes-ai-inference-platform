@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: azure/setup-kubectl@v4
+      - uses: azure/setup-kubectl@v5
       - name: Render Kustomize overlay
         run: kubectl kustomize deploy/app/overlays/local > /tmp/rendered.yaml
       - name: Parse rendered YAML
